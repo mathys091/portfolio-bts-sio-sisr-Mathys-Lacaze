@@ -1,0 +1,6 @@
+Dossier destine a vos captures d'ecran et schemas :
+- schemas reseau (draw.io, Packet Tracer)
+- captures Zabbix, GLPI, pfSense, Proxmox
+- photo d'identite si vous souhaitez en ajouter une
+
+Formats conseilles : PNG ou WebP, largeur maximale 1600 px.

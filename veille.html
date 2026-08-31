@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veille technologique — Portfolio BTS SIO SISR</title>
+<meta name="description" content="Démarche de veille technologique du BTS SIO SISR : thème retenu, sources, outils de collecte et fiches de synthèse.">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2338d9c4'/><text x='50' y='68' font-size='52' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23061018'>M</text></svg>">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Navigation principale">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true">MS</span>
+      <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+    </a>
+    <ul class="nav__links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="parcours.html">Parcours</a></li>
+      <li><a href="competences.html">Compétences</a></li>
+      <li><a href="projets.html">Projets PPE</a></li>
+      <li><a href="veille.html">Veille</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" id="nav-burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Fil d’Ariane">
+        <a href="index.html">Accueil</a><span>/</span><span>Veille</span>
+      </nav>
+      <p class="eyebrow">Développement professionnel</p>
+      <h1>Veille technologique</h1>
+      <p style="max-width:70ch">
+        La veille fait partie du référentiel : elle démontre la capacité à « organiser son développement
+        professionnel ». Voici la démarche que j’applique, les sources que je suis et les synthèses que j’en tire.
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <!-- ============ THÈME ============ -->
+    <section style="margin-bottom:3.4rem">
+      <div class="card reveal" style="border-color:var(--accent-border)">
+        <p class="eyebrow">Thème retenu</p>
+        <h2 style="margin-bottom:.7rem">Sécurisation des accès et résilience face aux rançongiciels dans les PME</h2>
+        <p style="max-width:75ch">
+          J’ai choisi ce sujet parce qu’il touche directement mon option : les rançongiciels exploitent presque
+          toujours une faiblesse d’<strong>administration</strong> — un accès distant mal protégé, un compte
+          privilégié réutilisé, une sauvegarde connectée en permanence. C’est aussi le sujet qui relie mes projets
+          <a href="projet-pfsense-vpn.html">PPE 03</a> et <a href="projet-virtualisation-sauvegarde.html">PPE 05</a>.
+        </p>
+        <div class="tags" style="margin-top:1rem">
+          <span class="badge badge--accent">Cybersécurité</span>
+          <span class="badge">Authentification forte</span>
+          <span class="badge">Sauvegarde hors ligne</span>
+          <span class="badge">Segmentation</span>
+          <span class="badge">Zero Trust</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MÉTHODE ============ -->
+    <section style="margin-bottom:3.4rem">
+      <div class="section-head reveal">
+        <p class="eyebrow">Méthode</p>
+        <h2>Comment j’organise ma veille</h2>
+      </div>
+
+      <div class="grid grid--4">
+        <article class="card reveal">
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          </div>
+          <h3>1. Collecter</h3>
+          <p>Agrégateur RSS auto-hébergé (FreshRSS) alimenté par une trentaine de flux, complété par deux lettres d’information hebdomadaires.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
+          </div>
+          <h3>2. Trier</h3>
+          <p>Filtrage par mots-clés, lecture des titres chaque matin (10 min), mise de côté des articles à approfondir.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16l-7-3-7 3z"/></svg>
+          </div>
+          <h3>3. Synthétiser</h3>
+          <p>Une fiche par sujet retenu : de quoi s’agit-il, qui est concerné, quel impact pour une PME, quelle action concrète.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 18h16"/></svg>
+          </div>
+          <h3>4. Appliquer</h3>
+          <p>Test au laboratoire quand c’est possible, puis intégration dans un projet ou dans la documentation d’exploitation.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ SOURCES ============ -->
+    <section style="margin-bottom:3.4rem">
+      <div class="section-head reveal">
+        <p class="eyebrow">Sources</p>
+        <h2>Mes sources d’information</h2>
+        <p>Je privilégie les sources primaires — organismes officiels et éditeurs — avant la presse spécialisée.</p>
+      </div>
+
+      <div class="table-wrap reveal">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Source</th>
+              <th scope="col">Type</th>
+              <th scope="col">Ce que j’y cherche</th>
+              <th scope="col">Fréquence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>CERT-FR (ANSSI)</strong></td><td>Officielle</td><td>Alertes, avis de vulnérabilité, bulletins d’actualité</td><td>Quotidienne</td></tr>
+            <tr><td><strong>ANSSI — guides et référentiels</strong></td><td>Officielle</td><td>Bonnes pratiques d’architecture et d’administration sécurisée</td><td>Mensuelle</td></tr>
+            <tr><td><strong>CNIL</strong></td><td>Officielle</td><td>RGPD, obligations en cas de violation de données</td><td>Mensuelle</td></tr>
+            <tr><td><strong>cybermalveillance.gouv.fr</strong></td><td>Officielle</td><td>Retours d’expérience et supports de sensibilisation</td><td>Mensuelle</td></tr>
+            <tr><td><strong>Bulletins de sécurité éditeurs</strong></td><td>Éditeur</td><td>Correctifs Microsoft, Debian, Proxmox, Netgate, Zabbix</td><td>Hebdomadaire</td></tr>
+            <tr><td><strong>LeMagIT</strong></td><td>Presse spécialisée</td><td>Analyse des tendances infrastructure et sécurité</td><td>Hebdomadaire</td></tr>
+            <tr><td><strong>The Hacker News / BleepingComputer</strong></td><td>Presse spécialisée</td><td>Incidents et campagnes d’attaque en cours</td><td>Quotidienne</td></tr>
+            <tr><td><strong>Communautés techniques</strong></td><td>Communautaire</td><td>Retours de terrain, forums d’administrateurs systèmes</td><td>Hebdomadaire</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout reveal">
+        <p class="callout__title">Vérification des informations</p>
+        <p>
+          Une information issue de la presse ou d’un forum n’est retenue qu’après recoupement avec une source
+          primaire : avis du CERT-FR, bulletin de l’éditeur ou documentation officielle. Cette étape m’a déjà évité
+          de relayer une alerte largement exagérée.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ FICHES ============ -->
+    <section style="margin-bottom:3.4rem">
+      <div class="section-head reveal">
+        <p class="eyebrow">Synthèses</p>
+        <h2>Fiches de veille</h2>
+        <p>Chaque fiche répond à la même question : <em>qu’est-ce que cela change concrètement pour l’infrastructure dont j’ai la charge ?</em></p>
+      </div>
+
+      <article class="watch-item reveal">
+        <div class="watch-item__meta">
+          <span class="badge badge--accent">Fiche 01</span>
+          <span class="badge">Authentification</span>
+          <span>Sources : ANSSI, documentation FIDO Alliance</span>
+        </div>
+        <h3>L’authentification multifacteur ne se vaut pas toute : le cas de l’hameçonnage en temps réel</h3>
+        <p>
+          <strong>Constat.</strong> Les codes à usage unique envoyés par SMS ou générés par une application peuvent
+          être interceptés par un site d’hameçonnage qui les rejoue immédiatement sur le vrai service. Le second
+          facteur devient alors inopérant.
+        </p>
+        <p>
+          <strong>Ce qui résiste.</strong> Les méthodes liées à l’origine du site — clés de sécurité matérielles et
+          authentification par clé publique (FIDO2/WebAuthn) — refusent de répondre à un domaine qui n’est pas le
+          bon, ce qui neutralise ce scénario.
+        </p>
+        <p>
+          <strong>Application.</strong> Dans mes projets, j’ai réservé les clés matérielles aux
+          <strong>comptes d’administration</strong> — les plus ciblés — et conservé l’application mobile pour les
+          comptes standards, faute de budget pour équiper tout le monde.
+        </p>
+      </article>
+
+      <article class="watch-item reveal">
+        <div class="watch-item__meta">
+          <span class="badge badge--accent">Fiche 02</span>
+          <span class="badge">Sauvegarde</span>
+          <span>Sources : CERT-FR, cybermalveillance.gouv.fr</span>
+        </div>
+        <h3>Rançongiciels : la sauvegarde connectée est la première cible</h3>
+        <p>
+          <strong>Constat.</strong> Les attaques récentes ne se contentent plus de chiffrer les données de
+          production : elles recherchent activement les partages de sauvegarde et les suppriment avant de
+          déclencher le chiffrement. Une sauvegarde accessible depuis le réseau avec un compte privilégié offre peu
+          de protection.
+        </p>
+        <p>
+          <strong>Ce qui fonctionne.</strong> Au moins une copie <strong>déconnectée ou immuable</strong>, un compte
+          de sauvegarde distinct des comptes d’administration du domaine, et des restaurations testées
+          régulièrement.
+        </p>
+        <p>
+          <strong>Application.</strong> C’est exactement ce qui a guidé la conception du
+          <a href="projet-virtualisation-sauvegarde.html">PPE 05</a> : troisième copie sur disque chiffré
+          physiquement débranché, et test de restauration mensuel chronométré.
+        </p>
+      </article>
+
+      <article class="watch-item reveal">
+        <div class="watch-item__meta">
+          <span class="badge badge--accent">Fiche 03</span>
+          <span class="badge">Architecture</span>
+          <span>Sources : guides ANSSI, NIST SP 800-207</span>
+        </div>
+        <h3>Zero Trust : ce que le modèle change réellement pour une PME</h3>
+        <p>
+          <strong>Constat.</strong> Le modèle historique — un réseau interne « de confiance » derrière un pare-feu —
+          ne tient plus dès lors qu’il y a du télétravail, des services hébergés à l’extérieur et des équipements
+          personnels. Le Zero Trust part du principe inverse : aucune confiance implicite, vérification à chaque
+          accès.
+        </p>
+        <p>
+          <strong>Nuance.</strong> Ce n’est pas un produit à acheter, mais une démarche progressive. Pour une PME,
+          les premières étapes réalistes sont la segmentation du réseau, l’authentification forte des accès distants
+          et la limitation des droits d’administration.
+        </p>
+        <p>
+          <strong>Application.</strong> La segmentation en VLAN du <a href="projet-vlan-routage.html">PPE 02</a> et
+          la matrice de flux du <a href="projet-pfsense-vpn.html">PPE 03</a> constituent la brique de base : on ne
+          peut restreindre les accès qu’après avoir séparé les zones.
+        </p>
+      </article>
+
+      <article class="watch-item reveal">
+        <div class="watch-item__meta">
+          <span class="badge badge--accent">Fiche 04</span>
+          <span class="badge">Réglementation</span>
+          <span>Sources : CNIL, textes européens</span>
+        </div>
+        <h3>Élargissement des obligations de cybersécurité aux entreprises de taille moyenne</h3>
+        <p>
+          <strong>Constat.</strong> La réglementation européenne étend progressivement les exigences de sécurité et
+          de notification d’incident à des secteurs et à des tailles d’entreprise qui n’étaient pas concernés
+          auparavant. Les obligations portent notamment sur la gestion des risques, la continuité d’activité et la
+          notification rapide des incidents significatifs.
+        </p>
+        <p>
+          <strong>Ce que cela implique.</strong> Des pratiques jusque-là facultatives — inventaire à jour, plan de
+          reprise, journalisation, gestion des accès — deviennent des attentes formalisées, y compris pour des
+          structures modestes.
+        </p>
+        <p>
+          <strong>Application.</strong> Cela justifie auprès d’une direction des projets qui semblent « non
+          productifs » : la supervision du <a href="projet-supervision.html">PPE 04</a> et le plan de reprise du
+          PPE 05 ne sont plus du confort, mais des éléments de conformité.
+        </p>
+      </article>
+
+      <article class="watch-item reveal">
+        <div class="watch-item__meta">
+          <span class="badge badge--accent">Fiche 05</span>
+          <span class="badge">Systèmes</span>
+          <span>Sources : bulletins éditeurs, documentation Proxmox et Debian</span>
+        </div>
+        <h3>Fin de support des systèmes : anticiper plutôt que subir</h3>
+        <p>
+          <strong>Constat.</strong> Un système hors support ne reçoit plus de correctifs de sécurité. Or les
+          calendriers de fin de vie sont publics et connus des années à l’avance ; les migrations se font pourtant
+          souvent dans l’urgence.
+        </p>
+        <p>
+          <strong>Méthode retenue.</strong> Tenir un tableau des dates de fin de support de chaque système et
+          logiciel du parc, avec une alerte douze mois avant l’échéance — assez tôt pour budgéter, tester et
+          planifier une fenêtre de migration.
+        </p>
+        <p>
+          <strong>Application.</strong> Ce tableau est désormais alimenté depuis l’inventaire GLPI mis en place au
+          <a href="projet-supervision.html">PPE 04</a>.
+        </p>
+      </article>
+
+      <article class="watch-item reveal">
+        <div class="watch-item__meta">
+          <span class="badge">Fiche 06</span>
+          <span class="badge badge--warn">À rédiger</span>
+          <span>Modèle vierge</span>
+        </div>
+        <h3>[Titre du sujet suivi]</h3>
+        <p><strong>Constat.</strong> [Ce que dit la source, reformulé avec vos mots.]</p>
+        <p><strong>Analyse.</strong> [Qui est concerné, quel est l’impact réel, quelles nuances.]</p>
+        <p><strong>Application.</strong> [Ce que vous en faites concrètement : test, modification de configuration, procédure.]</p>
+      </article>
+    </section>
+
+    <!-- ============ BILAN ============ -->
+    <section style="margin-bottom:2rem">
+      <div class="card reveal">
+        <p class="eyebrow">Bilan</p>
+        <h2 style="margin-bottom:.8rem">Ce que la veille m’a apporté</h2>
+        <p style="max-width:75ch">
+          Au début, je collectais beaucoup et je retenais peu. Le tournant a été d’imposer à chaque fiche une
+          section « application » : si je ne peux pas dire ce que l’information change pour une infrastructure
+          concrète, elle ne mérite pas d’être conservée. La veille est ainsi passée d’une accumulation de liens à
+          un véritable outil de décision — et plusieurs choix techniques de mes projets en découlent directement.
+        </p>
+        <p style="max-width:75ch">
+          Elle m’a aussi appris à me méfier des titres alarmistes : beaucoup d’alertes concernent des produits ou
+          des versions absents du parc. Savoir dire « cela ne nous concerne pas, et voici pourquoi » est une
+          compétence à part entière.
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:.9rem">
+          <span class="brand__mark" aria-hidden="true">MS</span>
+          <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+        </a>
+        <p style="max-width:38ch;font-size:.9rem">
+          Portfolio de compétences réalisé dans le cadre du BTS Services Informatiques aux Organisations,
+          option Solutions d’Infrastructure, Systèmes et Réseaux.
+        </p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="parcours.html">Parcours</a></li>
+          <li><a href="competences.html">Compétences</a></li>
+          <li><a href="projets.html">Projets PPE</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="veille.html">Veille technologique</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="assets/docs/cv.pdf">CV (PDF)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Mathys — Tous droits réservés.</span>
+      <span>Site statique, sans cookie ni traceur.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="icon-btn" id="to-top" type="button" aria-label="Revenir en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</button>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

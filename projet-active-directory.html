@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PPE 01 — Domaine Active Directory | Portfolio BTS SIO SISR</title>
+<meta name="description" content="Migration d’un groupe de travail vers un domaine Active Directory : AD DS, DNS, DHCP, unités d’organisation, GPO et partages sécurisés.">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2338d9c4'/><text x='50' y='68' font-size='52' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23061018'>M</text></svg>">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Navigation principale">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true">MS</span>
+      <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+    </a>
+    <ul class="nav__links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="parcours.html">Parcours</a></li>
+      <li><a href="competences.html">Compétences</a></li>
+      <li><a href="projets.html">Projets PPE</a></li>
+      <li><a href="veille.html">Veille</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" id="nav-burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Fil d’Ariane">
+        <a href="index.html">Accueil</a><span>/</span><a href="projets.html">Projets PPE</a><span>/</span><span>PPE 01</span>
+      </nav>
+      <div class="tags" style="margin-bottom:1rem">
+        <span class="badge badge--accent">PPE 01</span>
+        <span class="badge">Systèmes</span>
+        <span class="badge">Cybersécurité</span>
+        <span class="badge">Septembre — novembre 2024</span>
+      </div>
+      <h1>Domaine Active Directory et déploiement de postes</h1>
+      <p style="max-width:70ch">
+        Centraliser l’authentification, les droits et la configuration de 45 postes de travail en remplaçant
+        un fonctionnement en groupe de travail par un domaine Active Directory.
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="project-layout">
+
+      <!-- ============ CONTENU ============ -->
+      <article class="prose">
+
+        <h2>Contexte et besoin</h2>
+        <p>
+          L’entreprise support du projet, <strong>Sotracom</strong>, est une PME de 45 salariés répartis sur trois
+          services : administration, commercial et technique. Le parc fonctionnait en <strong>groupe de travail</strong> :
+          chaque poste possédait ses propres comptes locaux, les partages étaient ouverts à tous, et aucune politique
+          de mot de passe n’était appliquée.
+        </p>
+        <p>Le diagnostic initial a fait apparaître quatre problèmes majeurs :</p>
+        <ul>
+          <li>aucune <strong>traçabilité</strong> : impossible de savoir qui accédait à quel document ;</li>
+          <li>des mots de passe faibles, parfois partagés entre collègues ;</li>
+          <li>une <strong>configuration hétérogène</strong> des postes, chaque installation étant manuelle ;</li>
+          <li>un temps d’arrivée d’un nouveau collaborateur de près de deux heures (création des comptes sur
+            plusieurs machines, recopie des raccourcis et des imprimantes).</li>
+        </ul>
+
+        <div class="callout">
+          <p class="callout__title">Demande du commanditaire</p>
+          <p>
+            « Nous voulons un identifiant unique par salarié, des dossiers accessibles uniquement aux personnes
+            concernées, et pouvoir préparer un poste neuf en moins de trente minutes. »
+          </p>
+        </div>
+
+        <h2>Objectifs du projet</h2>
+        <ol>
+          <li>Installer un contrôleur de domaine Active Directory et y intégrer l’ensemble des postes.</li>
+          <li>Centraliser la résolution de noms (DNS) et l’adressage automatique (DHCP).</li>
+          <li>Structurer l’annuaire en unités d’organisation reflétant l’organigramme.</li>
+          <li>Appliquer des stratégies de groupe de sécurité et de confort utilisateur.</li>
+          <li>Mettre en place des partages réseau avec des droits par service.</li>
+          <li>Réduire le temps de préparation d’un poste et documenter la procédure.</li>
+        </ol>
+
+        <h2>Architecture retenue</h2>
+
+        <figure class="figure">
+          <svg viewBox="0 0 760 350" role="img" aria-label="Schéma logique : Internet, routeur pare-feu, commutateur, contrôleur de domaine, serveur de fichiers et postes clients">
+            <defs>
+              <marker id="ad-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M0 0 L8 4 L0 8 z" fill="currentColor" opacity=".5"/>
+              </marker>
+            </defs>
+            <g fill="none" stroke="currentColor" stroke-width="1.6" opacity=".45" color="var(--text-dim)">
+              <path d="M380 56 V90"/>
+              <path d="M380 136 V170"/>
+              <path d="M380 216 V240"/>
+              <path d="M115 240 H645"/>
+              <path d="M115 240 V260"/>
+              <path d="M380 240 V260"/>
+              <path d="M645 240 V260"/>
+            </g>
+
+            <!-- Internet -->
+            <g>
+              <rect x="310" y="10" width="140" height="46" rx="10" fill="var(--surface-2)" stroke="var(--border)"/>
+              <text x="380" y="39" text-anchor="middle" font-size="15" font-family="sans-serif" fill="var(--text-muted)">Internet</text>
+            </g>
+
+            <!-- Routeur -->
+            <g>
+              <rect x="300" y="90" width="160" height="46" rx="10" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+              <text x="380" y="112" text-anchor="middle" font-size="13.5" font-family="sans-serif" font-weight="600" fill="var(--text)">Routeur / pare-feu</text>
+              <text x="380" y="128" text-anchor="middle" font-size="11.5" font-family="monospace" fill="var(--text-dim)">192.168.10.254</text>
+            </g>
+
+            <!-- Switch -->
+            <g>
+              <rect x="270" y="170" width="220" height="46" rx="10" fill="var(--surface)" stroke="var(--border)"/>
+              <text x="380" y="192" text-anchor="middle" font-size="13.5" font-family="sans-serif" font-weight="600" fill="var(--text)">Commutateur d’accès</text>
+              <text x="380" y="208" text-anchor="middle" font-size="11.5" font-family="monospace" fill="var(--text-dim)">VLAN 10 · 192.168.10.0/24</text>
+            </g>
+
+            <!-- DC -->
+            <g>
+              <rect x="30" y="260" width="170" height="72" rx="10" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+              <text x="115" y="282" text-anchor="middle" font-size="13.5" font-family="sans-serif" font-weight="600" fill="var(--text)">SRV-AD01</text>
+              <text x="115" y="299" text-anchor="middle" font-size="11" font-family="sans-serif" fill="var(--text-muted)">AD DS · DNS · DHCP</text>
+              <text x="115" y="316" text-anchor="middle" font-size="11" font-family="monospace" fill="var(--text-dim)">192.168.10.10</text>
+            </g>
+
+            <!-- Fichiers -->
+            <g>
+              <rect x="295" y="260" width="170" height="72" rx="10" fill="var(--surface)" stroke="var(--border)"/>
+              <text x="380" y="282" text-anchor="middle" font-size="13.5" font-family="sans-serif" font-weight="600" fill="var(--text)">SRV-FIC01</text>
+              <text x="380" y="299" text-anchor="middle" font-size="11" font-family="sans-serif" fill="var(--text-muted)">Partages · quotas</text>
+              <text x="380" y="316" text-anchor="middle" font-size="11" font-family="monospace" fill="var(--text-dim)">192.168.10.20</text>
+            </g>
+
+            <!-- Postes -->
+            <g>
+              <rect x="560" y="260" width="170" height="72" rx="10" fill="var(--surface)" stroke="var(--border)"/>
+              <text x="645" y="282" text-anchor="middle" font-size="13.5" font-family="sans-serif" font-weight="600" fill="var(--text)">45 postes clients</text>
+              <text x="645" y="299" text-anchor="middle" font-size="11" font-family="sans-serif" fill="var(--text-muted)">Windows 11 · DHCP</text>
+              <text x="645" y="316" text-anchor="middle" font-size="11" font-family="monospace" fill="var(--text-dim)">.100 → .200</text>
+            </g>
+          </svg>
+          <figcaption>Schéma logique de l’infrastructure cible du PPE 01.</figcaption>
+        </figure>
+
+        <h3>Plan d’adressage</h3>
+        <div class="table-wrap" style="margin-bottom:1.4rem">
+          <table>
+            <thead>
+              <tr><th scope="col">Équipement</th><th scope="col">Adresse IP</th><th scope="col">Rôle</th><th scope="col">Attribution</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>SRV-AD01</strong></td><td>192.168.10.10/24</td><td>AD DS, DNS, DHCP</td><td>Statique</td></tr>
+              <tr><td><strong>SRV-FIC01</strong></td><td>192.168.10.20/24</td><td>Serveur de fichiers</td><td>Statique</td></tr>
+              <tr><td><strong>Imprimantes</strong></td><td>192.168.10.30 → .49</td><td>Impression réseau</td><td>Réservation DHCP</td></tr>
+              <tr><td><strong>Postes de travail</strong></td><td>192.168.10.100 → .200</td><td>Clients du domaine</td><td>Étendue DHCP</td></tr>
+              <tr><td><strong>Passerelle</strong></td><td>192.168.10.254/24</td><td>Sortie Internet</td><td>Statique</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Structure de l’annuaire</h3>
+        <p>
+          L’unité d’organisation racine <code>OU=Sotracom</code> contient une sous-unité par service, elle-même
+          divisée entre utilisateurs et ordinateurs afin de cibler précisément les stratégies de groupe :
+        </p>
+        <pre><code>sotracom.local
+└── OU=Sotracom
+    ├── OU=Administration
+    │   ├── OU=Utilisateurs
+    │   └── OU=Ordinateurs
+    ├── OU=Commercial
+    │   ├── OU=Utilisateurs
+    │   └── OU=Ordinateurs
+    ├── OU=Technique
+    │   ├── OU=Utilisateurs
+    │   └── OU=Ordinateurs
+    └── OU=Serveurs</code></pre>
+
+        <h2>Mise en œuvre</h2>
+        <ol class="steps">
+          <li>
+            <strong>Maquettage en machines virtuelles</strong>
+            Trois VM sous VirtualBox (un serveur, deux clients) sur un réseau interne isolé, afin de tester
+            la promotion du domaine sans impacter le réseau du laboratoire.
+          </li>
+          <li>
+            <strong>Installation du contrôleur de domaine</strong>
+            Windows Server 2022, adressage statique, renommage de la machine, installation du rôle AD DS puis
+            promotion en contrôleur de la forêt <code>sotracom.local</code> avec le DNS intégré.
+          </li>
+          <li>
+            <strong>Configuration DHCP</strong>
+            Étendue 192.168.10.100-200, durée de bail de 8 jours, options 003 (passerelle), 006 (DNS) et 015
+            (suffixe), réservations pour les imprimantes, autorisation du serveur dans l’annuaire.
+          </li>
+          <li>
+            <strong>Création des objets d’annuaire</strong>
+            Import en masse des 45 comptes depuis un fichier CSV fourni par les ressources humaines, création
+            des groupes de sécurité globaux par service et des groupes locaux de domaine pour les droits.
+          </li>
+          <li>
+            <strong>Stratégies de groupe</strong>
+            Politique de mot de passe, verrouillage de session, fond d’écran et raccourcis, lecteurs réseau
+            connectés, restriction du panneau de configuration, déploiement des imprimantes.
+          </li>
+          <li>
+            <strong>Partages et permissions</strong>
+            Modèle AGDLP : les utilisateurs sont placés dans des groupes globaux, eux-mêmes membres de groupes
+            locaux de domaine portant les permissions NTFS des dossiers.
+          </li>
+          <li>
+            <strong>Intégration des postes et recette</strong>
+            Jonction au domaine, connexion des utilisateurs, vérification de l’application des stratégies
+            (<code>gpresult /r</code>) et validation avec le commanditaire.
+          </li>
+        </ol>
+
+        <h3>Extrait — création des comptes depuis un fichier CSV</h3>
+        <pre><code>Import-Csv -Path .\salaries.csv -Delimiter ";" | ForEach-Object {
+    $identifiant = ($_.Prenom.Substring(0,1) + "." + $_.Nom).ToLower()
+    $ou = "OU=Utilisateurs,OU=$($_.Service),OU=Sotracom,DC=sotracom,DC=local"
+
+    New-ADUser `
+        -Name              "$($_.Prenom) $($_.Nom)" `
+        -SamAccountName    $identifiant `
+        -UserPrincipalName "$identifiant@sotracom.local" `
+        -Path              $ou `
+        -AccountPassword   (ConvertTo-SecureString $_.MotDePasse -AsPlainText -Force) `
+        -ChangePasswordAtLogon $true `
+        -Enabled $true
+
+    Add-ADGroupMember -Identity "GG_$($_.Service)" -Members $identifiant
+}</code></pre>
+
+        <h3>Extrait — politique de mot de passe appliquée</h3>
+        <pre><code>Longueur minimale ................ 12 caractères
+Complexité ....................... activée (3 des 4 familles)
+Historique ....................... 10 derniers mots de passe
+Durée de vie maximale ............ 180 jours
+Verrouillage ..................... 5 tentatives / 15 minutes
+Réinitialisation du compteur ..... 15 minutes</code></pre>
+
+        <h2>Tests et recette</h2>
+        <div class="table-wrap" style="margin-bottom:1.4rem">
+          <table>
+            <thead>
+              <tr><th scope="col">Test</th><th scope="col">Résultat attendu</th><th scope="col">Statut</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Connexion d’un utilisateur sur un poste quelconque</td><td>Profil et lecteurs réseau chargés</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Obtention d’un bail DHCP</td><td>Adresse dans l’étendue, DNS et passerelle corrects</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Accès d’un commercial au dossier « Technique »</td><td>Accès refusé</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Mot de passe de 8 caractères</td><td>Refus par la stratégie de domaine</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Cinq échecs d’authentification</td><td>Verrouillage du compte pendant 15 minutes</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Préparation d’un poste neuf</td><td>Opérationnel en moins de 30 minutes</td><td><span class="badge badge--ok">22 minutes</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Difficultés rencontrées</h2>
+        <ul>
+          <li>
+            <strong>Postes conservant l’ancien serveur DNS.</strong> Après la jonction au domaine, certains clients
+            n’arrivaient pas à localiser le contrôleur. En cause : la box internet distribuait encore ses propres
+            options DHCP. La désactivation du serveur DHCP de la box a résolu le conflit — un cas concret de
+            <em>deux serveurs DHCP sur le même segment</em>.
+          </li>
+          <li>
+            <strong>GPO sans effet sur les ordinateurs.</strong> Une stratégie ciblant les postes avait été liée à
+            l’unité d’organisation des utilisateurs. La distinction entre configuration « ordinateur » et
+            « utilisateur » et l’usage de <code>gpresult /h rapport.html</code> ont permis de comprendre l’erreur.
+          </li>
+          <li>
+            <strong>Droits NTFS trop permissifs.</strong> Le premier essai reposait sur des permissions attribuées
+            directement aux utilisateurs, vite ingérable. Le passage au modèle AGDLP a rendu la gestion des droits
+            lisible et reproductible.
+          </li>
+        </ul>
+
+        <h2>Bilan et pistes d’amélioration</h2>
+        <p>
+          Le projet répond aux objectifs : identité unique, droits par service, préparation d’un poste divisée par
+          quatre. Il m’a surtout appris que la valeur d’une infrastructure tient à sa <strong>documentation</strong> :
+          le classeur de procédures rédigé en fin de projet a permis à un camarade de rejouer l’installation complète
+          sans mon aide.
+        </p>
+        <p>Pistes identifiées pour une suite :</p>
+        <ul>
+          <li>ajouter un <strong>second contrôleur de domaine</strong> pour la tolérance de panne ;</li>
+          <li>déployer WSUS pour maîtriser les mises à jour ;</li>
+          <li>mettre en place un déploiement d’images par le réseau (WDS/MDT) ;</li>
+          <li>activer l’audit des accès aux dossiers sensibles et centraliser les journaux.</li>
+        </ul>
+
+      </article>
+
+      <!-- ============ COLONNE LATÉRALE ============ -->
+      <aside class="project-aside">
+        <div class="card">
+          <h3 style="font-size:1rem">Fiche d’identité</h3>
+          <dl style="margin:0;display:grid;gap:.85rem;font-size:.88rem">
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Durée</dt><dd style="margin:.2rem 0 0">10 semaines</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Équipe</dt><dd style="margin:.2rem 0 0">Binôme — rôle : administration serveur</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Périmètre</dt><dd style="margin:.2rem 0 0">2 serveurs, 45 postes, 4 imprimantes</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Livrables</dt><dd style="margin:.2rem 0 0">Schémas, plan d’adressage, procédures, jeu d’essai</dd></div>
+          </dl>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Technologies</h3>
+          <div class="tags">
+            <span class="badge">Windows Server 2022</span><span class="badge">AD DS</span><span class="badge">DNS</span>
+            <span class="badge">DHCP</span><span class="badge">GPO</span><span class="badge">NTFS</span>
+            <span class="badge">PowerShell</span><span class="badge">VirtualBox</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Compétences validées</h3>
+          <ul style="padding-left:1.1rem;font-size:.87rem;color:var(--text-muted);margin:0">
+            <li>Installer, tester et déployer une solution d’infrastructure</li>
+            <li>Mettre à disposition des utilisateurs un service informatique</li>
+            <li>Sécuriser les équipements et les usages des utilisateurs</li>
+            <li>Répondre aux incidents et aux demandes</li>
+          </ul>
+          <p style="margin:.9rem 0 0"><a href="competences.html">Voir le référentiel →</a></p>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Navigation</h3>
+          <p style="margin:0;font-size:.88rem"><a href="projets.html">← Tous les projets</a></p>
+          <p style="margin:.5rem 0 0;font-size:.88rem"><a href="projet-vlan-routage.html">PPE 02 — Segmentation VLAN →</a></p>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:.9rem">
+          <span class="brand__mark" aria-hidden="true">MS</span>
+          <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+        </a>
+        <p style="max-width:38ch;font-size:.9rem">
+          Portfolio de compétences réalisé dans le cadre du BTS Services Informatiques aux Organisations,
+          option Solutions d’Infrastructure, Systèmes et Réseaux.
+        </p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="parcours.html">Parcours</a></li>
+          <li><a href="competences.html">Compétences</a></li>
+          <li><a href="projets.html">Projets PPE</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="veille.html">Veille technologique</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="assets/docs/cv.pdf">CV (PDF)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Mathys — Tous droits réservés.</span>
+      <span>Site statique, sans cookie ni traceur.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="icon-btn" id="to-top" type="button" aria-label="Revenir en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</button>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

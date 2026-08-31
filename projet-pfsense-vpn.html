@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PPE 03 — Pare-feu pfSense, DMZ et VPN | Portfolio BTS SIO SISR</title>
+<meta name="description" content="Mise en place d’une passerelle de sécurité pfSense : zones LAN, DMZ et WAN, filtrage à états, VPN IPsec site à site et accès nomade OpenVPN.">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2338d9c4'/><text x='50' y='68' font-size='52' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23061018'>M</text></svg>">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Navigation principale">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true">MS</span>
+      <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+    </a>
+    <ul class="nav__links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="parcours.html">Parcours</a></li>
+      <li><a href="competences.html">Compétences</a></li>
+      <li><a href="projets.html">Projets PPE</a></li>
+      <li><a href="veille.html">Veille</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" id="nav-burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Fil d’Ariane">
+        <a href="index.html">Accueil</a><span>/</span><a href="projets.html">Projets PPE</a><span>/</span><span>PPE 03</span>
+      </nav>
+      <div class="tags" style="margin-bottom:1rem">
+        <span class="badge badge--accent">PPE 03</span>
+        <span class="badge">Cybersécurité</span>
+        <span class="badge">Réseaux</span>
+        <span class="badge">Mars — mai 2025</span>
+      </div>
+      <h1>Pare-feu pfSense, DMZ et VPN site à site</h1>
+      <p style="max-width:70ch">
+        Remplacer une simple box par une véritable passerelle de sécurité : filtrage à états, zone démilitarisée
+        pour les services publiés, interconnexion chiffrée de deux sites et accès nomade.
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="project-layout">
+
+      <article class="prose">
+
+        <h2>Contexte et besoin</h2>
+        <p>
+          L’entreprise dispose d’un <strong>siège</strong> et d’une <strong>agence</strong> distante. Jusqu’ici,
+          l’échange de fichiers entre les deux sites passait par une clé USB ou par messagerie, et le serveur web
+          interne était publié par une simple redirection de port depuis la box, sans aucun cloisonnement.
+        </p>
+        <p>Trois risques ont été identifiés lors de l’analyse préalable :</p>
+        <ul>
+          <li>un serveur exposé depuis Internet et situé <strong>dans le même réseau que les postes</strong> : sa
+            compromission donnerait un accès direct au réseau bureautique ;</li>
+          <li>des données d’entreprise transitant en clair entre les deux sites ;</li>
+          <li>aucune journalisation exploitable des connexions entrantes.</li>
+        </ul>
+
+        <div class="callout callout--warn">
+          <p class="callout__title">Principe directeur</p>
+          <p>
+            Tout ce qui n’est pas explicitement autorisé est interdit. Les règles sont écrites zone par zone, du
+            plus restrictif au plus permissif, et chaque autorisation est justifiée dans la documentation.
+          </p>
+        </div>
+
+        <h2>Architecture retenue</h2>
+
+        <figure class="figure">
+          <svg viewBox="0 0 760 400" role="img" aria-label="Schéma : deux sites reliés par un tunnel IPsec, avec zones LAN et DMZ derrière chaque pare-feu">
+            <g fill="none" stroke="currentColor" stroke-width="1.6" opacity=".45" color="var(--text-dim)">
+              <path d="M170 108 V140"/><path d="M590 108 V140"/>
+              <path d="M170 196 V226"/><path d="M95 226 H245"/>
+              <path d="M95 226 V250"/><path d="M245 226 V250"/>
+              <path d="M590 196 V250"/>
+            </g>
+
+            <!-- Internet -->
+            <rect x="290" y="16" width="180" height="52" rx="12" fill="var(--surface-2)" stroke="var(--border)"/>
+            <text x="380" y="40" text-anchor="middle" font-size="14" font-family="sans-serif" font-weight="600" fill="var(--text-muted)">Internet</text>
+            <text x="380" y="57" text-anchor="middle" font-size="11" font-family="sans-serif" fill="var(--text-dim)">liens opérateur</text>
+
+            <g fill="none" stroke="currentColor" stroke-width="1.6" opacity=".45" color="var(--text-dim)">
+              <path d="M290 46 H170 V140"/>
+              <path d="M470 46 H590 V140"/>
+            </g>
+
+            <!-- Tunnel -->
+            <path d="M250 78 Q380 116 510 78" stroke="var(--accent)" stroke-width="2.6" stroke-dasharray="8 6" fill="none"/>
+            <text x="380" y="130" text-anchor="middle" font-size="11.5" font-family="sans-serif" font-weight="600" fill="var(--accent)">Tunnel IPsec IKEv2 · AES-256-GCM</text>
+
+            <!-- FW site A -->
+            <rect x="80" y="140" width="180" height="56" rx="11" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="170" y="164" text-anchor="middle" font-size="13.5" font-family="sans-serif" font-weight="600" fill="var(--text)">pfSense — Siège</text>
+            <text x="170" y="182" text-anchor="middle" font-size="11" font-family="monospace" fill="var(--text-dim)">WAN / LAN / DMZ</text>
+
+            <!-- FW site B -->
+            <rect x="500" y="140" width="180" height="56" rx="11" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="590" y="164" text-anchor="middle" font-size="13.5" font-family="sans-serif" font-weight="600" fill="var(--text)">pfSense — Agence</text>
+            <text x="590" y="182" text-anchor="middle" font-size="11" font-family="monospace" fill="var(--text-dim)">WAN / LAN</text>
+
+            <!-- Zones site A -->
+            <rect x="20" y="250" width="150" height="70" rx="10" fill="var(--surface)" stroke="var(--border)"/>
+            <text x="95" y="273" text-anchor="middle" font-size="12.5" font-family="sans-serif" font-weight="600" fill="var(--text)">LAN Siège</text>
+            <text x="95" y="290" text-anchor="middle" font-size="10.5" font-family="monospace" fill="var(--text-dim)">172.16.0.0/16</text>
+            <text x="95" y="306" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">postes · serveurs</text>
+
+            <rect x="185" y="250" width="150" height="70" rx="10" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.4"/>
+            <text x="260" y="273" text-anchor="middle" font-size="12.5" font-family="sans-serif" font-weight="600" fill="var(--text)">DMZ</text>
+            <text x="260" y="290" text-anchor="middle" font-size="10.5" font-family="monospace" fill="var(--text-dim)">192.168.100.0/24</text>
+            <text x="260" y="306" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">web · relais mail</text>
+
+            <!-- Zone site B -->
+            <rect x="515" y="250" width="150" height="70" rx="10" fill="var(--surface)" stroke="var(--border)"/>
+            <text x="590" y="273" text-anchor="middle" font-size="12.5" font-family="sans-serif" font-weight="600" fill="var(--text)">LAN Agence</text>
+            <text x="590" y="290" text-anchor="middle" font-size="10.5" font-family="monospace" fill="var(--text-dim)">172.20.0.0/16</text>
+            <text x="590" y="306" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">12 postes</text>
+
+            <!-- Nomades -->
+            <rect x="290" y="340" width="180" height="48" rx="10" fill="var(--surface-2)" stroke="var(--border)" stroke-dasharray="5 4"/>
+            <text x="380" y="362" text-anchor="middle" font-size="12.5" font-family="sans-serif" font-weight="600" fill="var(--text-muted)">Nomades — OpenVPN</text>
+            <text x="380" y="378" text-anchor="middle" font-size="10.5" font-family="monospace" fill="var(--text-dim)">10.8.0.0/24</text>
+            <path d="M290 364 H12 V168 H80" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="5 4" opacity=".7"/>
+          </svg>
+          <figcaption>Interconnexion des deux sites et publication des services depuis la DMZ.</figcaption>
+        </figure>
+
+        <h3>Matrice de flux</h3>
+        <div class="table-wrap" style="margin-bottom:1.4rem">
+          <table>
+            <thead>
+              <tr><th scope="col">Source</th><th scope="col">Destination</th><th scope="col">Service</th><th scope="col">Action</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>LAN</td><td>Internet</td><td>HTTP, HTTPS, DNS, NTP</td><td><span class="badge badge--ok">Autorisé</span></td></tr>
+              <tr><td>LAN</td><td>DMZ</td><td>HTTPS, SSH (administration)</td><td><span class="badge badge--ok">Autorisé</span></td></tr>
+              <tr><td>DMZ</td><td>LAN</td><td>Tout</td><td><span class="badge badge--danger">Interdit</span></td></tr>
+              <tr><td>DMZ</td><td>Internet</td><td>HTTPS (mises à jour), DNS</td><td><span class="badge badge--warn">Limité</span></td></tr>
+              <tr><td>Internet</td><td>DMZ</td><td>HTTPS (443) uniquement</td><td><span class="badge badge--ok">Autorisé</span></td></tr>
+              <tr><td>Internet</td><td>LAN</td><td>Tout</td><td><span class="badge badge--danger">Interdit</span></td></tr>
+              <tr><td>LAN Siège</td><td>LAN Agence</td><td>SMB, RDP, ICMP (via IPsec)</td><td><span class="badge badge--ok">Autorisé</span></td></tr>
+              <tr><td>Nomades</td><td>LAN Siège</td><td>SMB, RDP, HTTPS</td><td><span class="badge badge--ok">Autorisé</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Mise en œuvre</h2>
+        <ol class="steps">
+          <li>
+            <strong>Maquette complète en machines virtuelles</strong>
+            Deux pfSense, un réseau « Internet » simulé, des clients de test dans chaque zone. Toute la
+            configuration a été validée hors production avant bascule.
+          </li>
+          <li>
+            <strong>Installation et interfaces</strong>
+            Affectation des trois interfaces (WAN, LAN, DMZ), adressage, désactivation de l’accès à
+            l’administration depuis le WAN, changement du port d’administration et création d’un compte dédié.
+          </li>
+          <li>
+            <strong>Règles de filtrage</strong>
+            Écriture des règles zone par zone à partir de la matrice de flux, avec alias nommés pour les groupes
+            d’hôtes et de ports, et journalisation activée sur les règles de blocage.
+          </li>
+          <li>
+            <strong>Publication du service web</strong>
+            NAT entrant du port 443 vers le serveur de la DMZ uniquement, avec règle associée limitée au strict
+            nécessaire.
+          </li>
+          <li>
+            <strong>Tunnel IPsec site à site</strong>
+            Phase 1 en IKEv2 (AES-256-GCM, SHA-256, groupe DH 14), phase 2 sur les réseaux privés des deux sites,
+            clé pré-partagée longue générée aléatoirement puis stockée dans un gestionnaire de secrets.
+          </li>
+          <li>
+            <strong>Accès nomade OpenVPN</strong>
+            Autorité de certification interne, certificat par utilisateur, authentification par certificat plus
+            identifiant, et route poussée uniquement vers les réseaux internes (pas de tunnel intégral).
+          </li>
+          <li>
+            <strong>Journalisation et sauvegarde</strong>
+            Envoi des journaux vers un collecteur syslog, export automatique de la configuration XML avant chaque
+            modification importante.
+          </li>
+        </ol>
+
+        <h3>Paramètres du tunnel IPsec</h3>
+        <pre><code>Phase 1
+  Version .................. IKEv2
+  Authentification ......... clé pré-partagée (32 caractères aléatoires)
+  Chiffrement .............. AES-256-GCM
+  Empreinte ................ SHA-256
+  Groupe DH ................ 14 (2048 bits)
+  Durée de vie ............. 28 800 s
+
+Phase 2
+  Mode ..................... tunnel IPv4
+  Réseau local ............. 172.16.0.0/16
+  Réseau distant ........... 172.20.0.0/16
+  Protocole ................ ESP
+  PFS ...................... groupe 14
+  Durée de vie ............. 3 600 s</code></pre>
+
+        <h2>Tests et recette</h2>
+        <div class="table-wrap" style="margin-bottom:1.4rem">
+          <table>
+            <thead>
+              <tr><th scope="col">Test</th><th scope="col">Résultat attendu</th><th scope="col">Statut</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Accès au site web depuis Internet</td><td>Réponse en HTTPS depuis la DMZ</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Connexion depuis le serveur DMZ vers un poste du LAN</td><td>Bloquée et journalisée</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Partage de fichiers entre siège et agence</td><td>Accessible via le tunnel</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Capture du trafic inter-sites</td><td>Charge utile chiffrée (ESP)</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Coupure du lien WAN de l’agence</td><td>Rétablissement automatique du tunnel</td><td><span class="badge badge--ok">≈ 40 s</span></td></tr>
+              <tr><td>Connexion nomade avec certificat révoqué</td><td>Refus d’authentification</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Scan de ports externe</td><td>Seul le 443 répond</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Difficultés rencontrées</h2>
+        <ul>
+          <li>
+            <strong>Tunnel monté mais aucun trafic.</strong> La phase 2 était établie, pourtant les pings
+            échouaient : il manquait les règles autorisant le trafic sur l’interface IPsec. Cette étape, souvent
+            oubliée, m’a fait comprendre la différence entre « négocier un tunnel » et « autoriser des flux ».
+          </li>
+          <li>
+            <strong>Serveur DMZ sans accès aux mises à jour.</strong> Les règles initiales bloquaient toute sortie
+            depuis la DMZ. Un compromis a été trouvé : sortie HTTPS autorisée vers les dépôts, tout le reste bloqué.
+          </li>
+          <li>
+            <strong>Perte de l’accès à l’interface d’administration.</strong> Une règle trop restrictive m’a coupé
+            l’accès web au pare-feu. La récupération par la console série m’a appris à toujours conserver un accès
+            de secours et à tester les règles d’administration en dernier.
+          </li>
+        </ul>
+
+        <h2>Bilan et pistes d’amélioration</h2>
+        <p>
+          C’est le projet qui m’a le plus marqué : il donne un sens concret aux notions de cloisonnement et de
+          moindre privilège. Écrire une matrice de flux avant de configurer quoi que ce soit change complètement la
+          façon d’aborder un pare-feu — la configuration devient la traduction d’une décision, et non l’inverse.
+        </p>
+        <ul>
+          <li>Ajouter un second pare-feu en haute disponibilité (CARP) au siège.</li>
+          <li>Mettre en place un reverse proxy avec filtrage applicatif devant les services publiés
+            (voir <a href="projet-serveur-web.html">PPE 06</a>).</li>
+          <li>Activer la détection d’intrusion (Suricata) sur l’interface WAN.</li>
+          <li>Remplacer la clé pré-partagée du tunnel par une authentification par certificats.</li>
+        </ul>
+
+      </article>
+
+      <aside class="project-aside">
+        <div class="card">
+          <h3 style="font-size:1rem">Fiche d’identité</h3>
+          <dl style="margin:0;display:grid;gap:.85rem;font-size:.88rem">
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Durée</dt><dd style="margin:.2rem 0 0">9 semaines</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Équipe</dt><dd style="margin:.2rem 0 0">Binôme — rôle : chef de projet et filtrage</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Périmètre</dt><dd style="margin:.2rem 0 0">2 sites, 3 zones, 1 tunnel, 8 accès nomades</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Livrables</dt><dd style="margin:.2rem 0 0">Matrice de flux, schémas, configuration exportée, procédure de secours</dd></div>
+          </dl>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Technologies</h3>
+          <div class="tags">
+            <span class="badge">pfSense</span><span class="badge">IPsec IKEv2</span><span class="badge">OpenVPN</span>
+            <span class="badge">NAT</span><span class="badge">DMZ</span><span class="badge">PKI interne</span>
+            <span class="badge">Syslog</span><span class="badge">Wireshark</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Compétences validées</h3>
+          <ul style="padding-left:1.1rem;font-size:.87rem;color:var(--text-muted);margin:0">
+            <li>Assurer la cybersécurité d’une solution d’infrastructure réseau</li>
+            <li>Concevoir une solution d’infrastructure réseau</li>
+            <li>Travailler en mode projet</li>
+            <li>Garantir la confidentialité des données</li>
+          </ul>
+          <p style="margin:.9rem 0 0"><a href="competences.html">Voir le référentiel →</a></p>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Navigation</h3>
+          <p style="margin:0;font-size:.88rem"><a href="projet-vlan-routage.html">← PPE 02 — VLAN</a></p>
+          <p style="margin:.5rem 0 0;font-size:.88rem"><a href="projet-supervision.html">PPE 04 — Supervision →</a></p>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:.9rem">
+          <span class="brand__mark" aria-hidden="true">MS</span>
+          <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+        </a>
+        <p style="max-width:38ch;font-size:.9rem">
+          Portfolio de compétences réalisé dans le cadre du BTS Services Informatiques aux Organisations,
+          option Solutions d’Infrastructure, Systèmes et Réseaux.
+        </p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="parcours.html">Parcours</a></li>
+          <li><a href="competences.html">Compétences</a></li>
+          <li><a href="projets.html">Projets PPE</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="veille.html">Veille technologique</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="assets/docs/cv.pdf">CV (PDF)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Mathys — Tous droits réservés.</span>
+      <span>Site statique, sans cookie ni traceur.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="icon-btn" id="to-top" type="button" aria-label="Revenir en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</button>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

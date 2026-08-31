@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compétences — Portfolio BTS SIO SISR</title>
+<meta name="description" content="Référentiel de compétences BTS SIO option SISR : les trois blocs, les preuves par projet et le tableau de synthèse de l’épreuve E5.">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2338d9c4'/><text x='50' y='68' font-size='52' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23061018'>M</text></svg>">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Navigation principale">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true">MS</span>
+      <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+    </a>
+    <ul class="nav__links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="parcours.html">Parcours</a></li>
+      <li><a href="competences.html">Compétences</a></li>
+      <li><a href="projets.html">Projets PPE</a></li>
+      <li><a href="veille.html">Veille</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" id="nav-burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Fil d’Ariane">
+        <a href="index.html">Accueil</a><span>/</span><span>Compétences</span>
+      </nav>
+      <p class="eyebrow">Référentiel BTS SIO</p>
+      <h1>Portefeuille de compétences</h1>
+      <p style="max-width:70ch">
+        Les compétences ci-dessous reprennent le référentiel du BTS Services Informatiques aux Organisations.
+        Pour chacune, j’indique le niveau de maîtrise atteint et les <strong>preuves</strong> : le ou les projets
+        encadrés et situations professionnelles qui la mettent en œuvre.
+      </p>
+      <div class="tags" style="margin-top:1.2rem">
+        <a class="badge badge--accent" href="#bloc1">Bloc 1 · E4</a>
+        <a class="badge badge--accent" href="#bloc2">Bloc 2 · E5 (SISR)</a>
+        <a class="badge badge--accent" href="#bloc3">Bloc 3 · E6</a>
+        <a class="badge" href="#synthese">Tableau de synthèse</a>
+        <a class="badge" href="#techniques">Compétences techniques</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <!-- ================= LÉGENDE ================= -->
+    <div class="card reveal" style="margin-bottom:2.6rem">
+      <h3 style="margin-bottom:.8rem">Échelle de maîtrise utilisée</h3>
+      <div class="grid grid--4" style="gap:1rem">
+        <div><span class="badge">Notions</span><p style="font-size:.86rem;margin-top:.5rem">Compétence abordée en cours, mise en œuvre accompagnée.</p></div>
+        <div><span class="badge badge--warn">En cours d’acquisition</span><p style="font-size:.86rem;margin-top:.5rem">Réalisée en autonomie partielle, avec aide ponctuelle.</p></div>
+        <div><span class="badge badge--accent">Maîtrisée</span><p style="font-size:.86rem;margin-top:.5rem">Réalisée seul dans un projet complet et documenté.</p></div>
+        <div><span class="badge badge--ok">Maîtrisée en contexte réel</span><p style="font-size:.86rem;margin-top:.5rem">Mise en œuvre en entreprise, en production.</p></div>
+      </div>
+    </div>
+
+    <!-- ================= BLOC 1 ================= -->
+    <section id="bloc1" class="bloc reveal">
+      <div class="bloc__head">
+        <span class="bloc__num" aria-hidden="true">1</span>
+        <h3>Support et mise à disposition de services informatiques</h3>
+        <span class="badge badge--accent">Épreuve E4</span>
+      </div>
+      <div class="bloc__body">
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Gérer le patrimoine informatique</span>
+            <span class="skill__level">Maîtrisée en contexte réel</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="85"></div></div>
+          <p class="skill__proof">
+            Inventaire matériel et logiciel sous GLPI, suivi des licences et des contrats, gestion des configurations.
+            → <a href="projet-supervision.html">PPE 04 — Supervision &amp; GLPI</a>, stage 1.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Répondre aux incidents et aux demandes d’assistance et d’évolution</span>
+            <span class="skill__level">Maîtrisée en contexte réel</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="88"></div></div>
+          <p class="skill__proof">
+            Traitement de tickets de niveau 1 et 2, méthode de diagnostic, escalade, rédaction de la base de connaissances.
+            → Stage 1, <a href="projet-active-directory.html">PPE 01</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Développer la présence en ligne de l’organisation</span>
+            <span class="skill__level">En cours d’acquisition</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="60"></div></div>
+          <p class="skill__proof">
+            Mise en ligne et sécurisation d’un site vitrine, hébergement, certificat TLS, sauvegarde du contenu.
+            → <a href="projet-serveur-web.html">PPE 06 — Hébergement web sécurisé</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Travailler en mode projet</span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="80"></div></div>
+          <p class="skill__proof">
+            Cahier des charges, découpage en lots, planning, répartition des rôles en binôme, recette et bilan.
+            → Ensemble des PPE, en particulier <a href="projet-pfsense-vpn.html">PPE 03</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Mettre à disposition des utilisateurs un service informatique</span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="82"></div></div>
+          <p class="skill__proof">
+            Déploiement de postes, création des comptes et des partages, rédaction des procédures utilisateur.
+            → <a href="projet-active-directory.html">PPE 01</a>, <a href="projet-virtualisation-sauvegarde.html">PPE 05</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Organiser son développement professionnel</span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="78"></div></div>
+          <p class="skill__proof">
+            Veille technologique hebdomadaire structurée, laboratoire personnel, portfolio en ligne.
+            → <a href="veille.html">Page Veille technologique</a>.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= BLOC 2 ================= -->
+    <section id="bloc2" class="bloc reveal">
+      <div class="bloc__head">
+        <span class="bloc__num" aria-hidden="true">2</span>
+        <h3>Administration des systèmes et des réseaux <span class="text-muted" style="font-weight:500">(spécialité SISR)</span></h3>
+        <span class="badge badge--accent">Épreuve E5</span>
+      </div>
+      <div class="bloc__body">
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Concevoir une solution d’infrastructure réseau</span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="85"></div></div>
+          <p class="skill__proof">
+            Analyse du besoin, plan d’adressage IP, schémas physique et logique, choix des équipements, segmentation
+            en VLAN et zone démilitarisée.
+            → <a href="projet-vlan-routage.html">PPE 02</a>, <a href="projet-pfsense-vpn.html">PPE 03</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Installer, tester et déployer une solution d’infrastructure réseau</span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="88"></div></div>
+          <p class="skill__proof">
+            Installation de serveurs physiques et virtuels, configuration des commutateurs et routeurs, jeux d’essai
+            documentés, recette avec le commanditaire, bascule en production.
+            → <a href="projet-active-directory.html">PPE 01</a>, <a href="projet-vlan-routage.html">PPE 02</a>,
+            <a href="projet-virtualisation-sauvegarde.html">PPE 05</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Exploiter, dépanner et superviser une solution d’infrastructure réseau</span>
+            <span class="skill__level">Maîtrisée en contexte réel</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="90"></div></div>
+          <p class="skill__proof">
+            Sondes SNMP, seuils et notifications, analyse de trames avec Wireshark, journalisation centralisée,
+            procédures d’exploitation et de reprise.
+            → <a href="projet-supervision.html">PPE 04</a>, stage 2.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= BLOC 3 ================= -->
+    <section id="bloc3" class="bloc reveal">
+      <div class="bloc__head">
+        <span class="bloc__num" aria-hidden="true">3</span>
+        <h3>Cybersécurité des services informatiques</h3>
+        <span class="badge badge--accent">Épreuve E6</span>
+      </div>
+      <div class="bloc__body">
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Protéger les données à caractère personnel</span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="76"></div></div>
+          <p class="skill__proof">
+            Registre des traitements, minimisation des données, durées de conservation, chiffrement des sauvegardes,
+            sensibilisation des utilisateurs au RGPD.
+            → <a href="projet-virtualisation-sauvegarde.html">PPE 05</a>, <a href="projet-serveur-web.html">PPE 06</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Préserver l’identité numérique de l’organisation</span>
+            <span class="skill__level">En cours d’acquisition</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="65"></div></div>
+          <p class="skill__proof">
+            Gestion des noms de domaine et des certificats, enregistrements SPF/DKIM/DMARC, surveillance de la
+            réputation du domaine.
+            → <a href="projet-serveur-web.html">PPE 06</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Sécuriser les équipements et les usages des utilisateurs</span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="84"></div></div>
+          <p class="skill__proof">
+            Stratégies de groupe de durcissement, politique de mots de passe, chiffrement des disques, gestion des
+            droits selon le moindre privilège, mises à jour maîtrisées.
+            → <a href="projet-active-directory.html">PPE 01</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Garantir la disponibilité, l’intégrité et la confidentialité des services et des données face aux cyberattaques</span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="80"></div></div>
+          <p class="skill__proof">
+            Stratégie de sauvegarde 3-2-1 avec copie hors ligne, tests de restauration, redondance, analyse de risques
+            simplifiée et plan de reprise d’activité.
+            → <a href="projet-virtualisation-sauvegarde.html">PPE 05</a>.
+          </p>
+        </div>
+
+        <div class="skill">
+          <div class="skill__top">
+            <span class="skill__name">Assurer la cybersécurité d’une solution d’infrastructure réseau <span class="text-muted">(SISR)</span></span>
+            <span class="skill__level">Maîtrisée</span>
+          </div>
+          <div class="skill__bar"><div class="skill__fill" data-level="86"></div></div>
+          <p class="skill__proof">
+            Pare-feu à états, DMZ, filtrage applicatif, VPN IPsec et OpenVPN, durcissement des équipements réseau,
+            journalisation et détection des tentatives d’intrusion.
+            → <a href="projet-pfsense-vpn.html">PPE 03</a>, <a href="projet-vlan-routage.html">PPE 02</a>.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TABLEAU DE SYNTHÈSE ================= -->
+    <section id="synthese" style="margin:4rem 0">
+      <div class="section-head reveal">
+        <p class="eyebrow">Épreuve E5</p>
+        <h2>Tableau de synthèse des réalisations</h2>
+        <p>
+          Vue d’ensemble croisant chaque réalisation professionnelle avec les compétences mobilisées, le contexte
+          et la période. Ce tableau sert de support à la présentation orale devant le jury.
+        </p>
+      </div>
+
+      <div class="table-wrap reveal">
+        <table>
+          <caption class="visually-hidden">Synthèse des réalisations et des compétences associées</caption>
+          <thead>
+            <tr>
+              <th scope="col">Réf.</th>
+              <th scope="col">Réalisation</th>
+              <th scope="col">Contexte</th>
+              <th scope="col">Compétences mobilisées</th>
+              <th scope="col">Période</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge--accent">PPE 01</span></td>
+              <td><strong><a href="projet-active-directory.html">Domaine Active Directory et déploiement de postes</a></strong></td>
+              <td>Projet encadré — PME fictive « Sotracom »</td>
+              <td>Installer, tester et déployer une solution d’infrastructure ; mettre à disposition un service ; sécuriser les équipements et les usages</td>
+              <td>Sept. — nov. 2024</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge--accent">PPE 02</span></td>
+              <td><strong><a href="projet-vlan-routage.html">Segmentation VLAN et routage inter-VLAN</a></strong></td>
+              <td>Projet encadré — maquette Packet Tracer &amp; matériel du laboratoire</td>
+              <td>Concevoir une solution d’infrastructure réseau ; installer et déployer ; assurer la cybersécurité de l’infrastructure</td>
+              <td>Déc. 2024 — févr. 2025</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge--accent">PPE 03</span></td>
+              <td><strong><a href="projet-pfsense-vpn.html">Pare-feu pfSense, DMZ et VPN site à site</a></strong></td>
+              <td>Projet encadré — interconnexion de deux sites</td>
+              <td>Concevoir une solution d’infrastructure ; assurer la cybersécurité d’une solution d’infrastructure réseau ; travailler en mode projet</td>
+              <td>Mars — mai 2025</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge--ok">Stage 1</span></td>
+              <td><strong>Support utilisateur et gestion de parc</strong></td>
+              <td>[Nom de l’entreprise] — 5 semaines</td>
+              <td>Gérer le patrimoine informatique ; répondre aux incidents et aux demandes</td>
+              <td>Mai — juin 2025</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge--accent">PPE 04</span></td>
+              <td><strong><a href="projet-supervision.html">Supervision Zabbix et gestion de parc GLPI</a></strong></td>
+              <td>Projet encadré — exploitation de l’infrastructure</td>
+              <td>Exploiter, dépanner et superviser ; gérer le patrimoine informatique</td>
+              <td>Sept. — nov. 2025</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge--accent">PPE 05</span></td>
+              <td><strong><a href="projet-virtualisation-sauvegarde.html">Virtualisation Proxmox et plan de sauvegarde</a></strong></td>
+              <td>Projet encadré — consolidation et continuité de service</td>
+              <td>Installer et déployer ; garantir la disponibilité, l’intégrité et la confidentialité ; protéger les données personnelles</td>
+              <td>Nov. 2025 — janv. 2026</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge--ok">Stage 2</span></td>
+              <td><strong>Administration systèmes et réseaux</strong></td>
+              <td>[Nom de l’entreprise] — 5 semaines</td>
+              <td>Installer et déployer ; exploiter, dépanner et superviser</td>
+              <td>Janv. — févr. 2026</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge--accent">PPE 06</span></td>
+              <td><strong><a href="projet-serveur-web.html">Hébergement web sécurisé et reverse proxy</a></strong></td>
+              <td>Projet encadré — mise en ligne d’un service</td>
+              <td>Développer la présence en ligne ; préserver l’identité numérique ; mettre à disposition un service</td>
+              <td>Févr. — avril 2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout reveal">
+        <p class="callout__title">À personnaliser</p>
+        <p>
+          Les intitulés d’entreprise, les périodes et les contextes entre crochets sont à adapter à votre situation
+          réelle avant le dépôt du portfolio. Le jury attend des réalisations authentiques et vérifiables.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= COMPÉTENCES TECHNIQUES ================= -->
+    <section id="techniques" style="margin-bottom:3rem">
+      <div class="section-head reveal">
+        <p class="eyebrow">Environnement technique</p>
+        <h2>Technologies mises en œuvre</h2>
+      </div>
+
+      <div class="grid grid--3">
+        <article class="card reveal">
+          <h3>Systèmes d’exploitation</h3>
+          <div class="tags" style="margin-top:.8rem">
+            <span class="badge">Windows Server 2019/2022</span><span class="badge">Windows 10/11</span>
+            <span class="badge">Debian</span><span class="badge">Ubuntu Server</span><span class="badge">Rocky Linux</span>
+          </div>
+        </article>
+        <article class="card reveal">
+          <h3>Services d’infrastructure</h3>
+          <div class="tags" style="margin-top:.8rem">
+            <span class="badge">Active Directory DS</span><span class="badge">DNS</span><span class="badge">DHCP</span>
+            <span class="badge">GPO</span><span class="badge">WSUS</span><span class="badge">Samba</span><span class="badge">NFS</span>
+          </div>
+        </article>
+        <article class="card reveal">
+          <h3>Réseau</h3>
+          <div class="tags" style="margin-top:.8rem">
+            <span class="badge">VLAN 802.1Q</span><span class="badge">STP/RSTP</span><span class="badge">EtherChannel</span>
+            <span class="badge">OSPF</span><span class="badge">NAT</span><span class="badge">IPv4/IPv6</span><span class="badge">Wi-Fi WPA2/3</span>
+          </div>
+        </article>
+        <article class="card reveal">
+          <h3>Sécurité</h3>
+          <div class="tags" style="margin-top:.8rem">
+            <span class="badge">pfSense</span><span class="badge">IPsec</span><span class="badge">OpenVPN</span>
+            <span class="badge">Fail2ban</span><span class="badge">TLS / Let’s Encrypt</span><span class="badge">ACL</span>
+          </div>
+        </article>
+        <article class="card reveal">
+          <h3>Virtualisation &amp; conteneurs</h3>
+          <div class="tags" style="margin-top:.8rem">
+            <span class="badge">Proxmox VE</span><span class="badge">VMware ESXi</span><span class="badge">Hyper-V</span>
+            <span class="badge">VirtualBox</span><span class="badge">Docker</span>
+          </div>
+        </article>
+        <article class="card reveal">
+          <h3>Exploitation &amp; outils</h3>
+          <div class="tags" style="margin-top:.8rem">
+            <span class="badge">Zabbix</span><span class="badge">Nagios / Centreon</span><span class="badge">GLPI</span>
+            <span class="badge">Wireshark</span><span class="badge">PowerShell</span><span class="badge">Bash</span>
+            <span class="badge">Git</span><span class="badge">Packet Tracer</span><span class="badge">GNS3</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:.9rem">
+          <span class="brand__mark" aria-hidden="true">MS</span>
+          <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+        </a>
+        <p style="max-width:38ch;font-size:.9rem">
+          Portfolio de compétences réalisé dans le cadre du BTS Services Informatiques aux Organisations,
+          option Solutions d’Infrastructure, Systèmes et Réseaux.
+        </p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="parcours.html">Parcours</a></li>
+          <li><a href="competences.html">Compétences</a></li>
+          <li><a href="projets.html">Projets PPE</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="veille.html">Veille technologique</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="assets/docs/cv.pdf">CV (PDF)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Mathys — Tous droits réservés.</span>
+      <span>Site statique, sans cookie ni traceur.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="icon-btn" id="to-top" type="button" aria-label="Revenir en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</button>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Deposez ici votre CV au format PDF, nomme exactement : cv.pdf
+
+Les liens "CV (PDF)" du pied de page et le bouton "Telecharger le CV"
+de la page contact.html pointent deja vers assets/docs/cv.pdf.

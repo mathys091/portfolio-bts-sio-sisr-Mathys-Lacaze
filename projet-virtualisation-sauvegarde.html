@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PPE 05 — Virtualisation Proxmox et sauvegarde | Portfolio BTS SIO SISR</title>
+<meta name="description" content="Consolidation de serveurs sur Proxmox VE, stockage redondé, stratégie de sauvegarde 3-2-1 et plan de reprise d’activité testé.">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2338d9c4'/><text x='50' y='68' font-size='52' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23061018'>M</text></svg>">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Navigation principale">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true">MS</span>
+      <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+    </a>
+    <ul class="nav__links" id="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="parcours.html">Parcours</a></li>
+      <li><a href="competences.html">Compétences</a></li>
+      <li><a href="projets.html">Projets PPE</a></li>
+      <li><a href="veille.html">Veille</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav__actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" id="nav-burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Fil d’Ariane">
+        <a href="index.html">Accueil</a><span>/</span><a href="projets.html">Projets PPE</a><span>/</span><span>PPE 05</span>
+      </nav>
+      <div class="tags" style="margin-bottom:1rem">
+        <span class="badge badge--accent">PPE 05</span>
+        <span class="badge">Virtualisation</span>
+        <span class="badge">Continuité de service</span>
+        <span class="badge">Novembre 2025 — janvier 2026</span>
+      </div>
+      <h1>Virtualisation Proxmox et plan de sauvegarde</h1>
+      <p style="max-width:70ch">
+        Consolider des serveurs physiques vieillissants sur un hyperviseur, puis construire — et surtout
+        <strong>tester</strong> — une stratégie de sauvegarde capable de résister à un rançongiciel.
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="project-layout">
+
+      <article class="prose">
+
+        <h2>Contexte et besoin</h2>
+        <p>
+          Cinq serveurs physiques, achetés à des dates différentes, hébergeaient chacun un seul rôle. Leur taux
+          d’utilisation processeur dépassait rarement 10 %, mais l’ensemble consommait de l’énergie, occupait de la
+          place et posait un problème de garantie : deux machines n’étaient plus maintenues.
+        </p>
+        <p>Côté sauvegarde, la situation était plus préoccupante encore :</p>
+        <ul>
+          <li>une copie sur un disque USB laissé branché en permanence — donc chiffrable par un rançongiciel ;</li>
+          <li>aucun test de restauration depuis plus d’un an ;</li>
+          <li>aucune sauvegarde hors site.</li>
+        </ul>
+
+        <div class="callout callout--warn">
+          <p class="callout__title">Constat de départ</p>
+          <p>
+            Une sauvegarde jamais restaurée n’est pas une sauvegarde : c’est une hypothèse. L’objectif du projet a
+            donc été autant de <em>prouver</em> la restauration que de la mettre en place.
+          </p>
+        </div>
+
+        <h2>Objectifs et engagements de service</h2>
+        <div class="table-wrap" style="margin-bottom:1.4rem">
+          <table>
+            <thead>
+              <tr><th scope="col">Service</th><th scope="col">Criticité</th><th scope="col">PDMA (RPO)</th><th scope="col">DMIA (RTO)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Contrôleur de domaine</td><td><span class="badge badge--danger">Vitale</span></td><td>24 h</td><td>2 h</td></tr>
+              <tr><td>Serveur de fichiers</td><td><span class="badge badge--danger">Vitale</span></td><td>4 h</td><td>4 h</td></tr>
+              <tr><td>Base de données métier</td><td><span class="badge badge--danger">Vitale</span></td><td>1 h</td><td>4 h</td></tr>
+              <tr><td>Supervision</td><td><span class="badge badge--warn">Importante</span></td><td>24 h</td><td>24 h</td></tr>
+              <tr><td>Serveur de test</td><td><span class="badge">Secondaire</span></td><td>7 j</td><td>72 h</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>PDMA</strong> : perte de données maximale admissible — quelle quantité de travail peut être perdue.
+          <strong>DMIA</strong> : durée maximale d’interruption admissible — en combien de temps le service doit revenir.
+        </p>
+
+        <h2>Architecture retenue</h2>
+
+        <figure class="figure">
+          <svg viewBox="0 0 760 340" role="img" aria-label="Schéma : hyperviseur Proxmox hébergeant plusieurs machines virtuelles, avec sauvegardes locale, NAS et hors site">
+            <!-- Hyperviseur -->
+            <rect x="40" y="20" width="420" height="180" rx="14" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.6"/>
+            <text x="250" y="46" text-anchor="middle" font-size="14" font-family="sans-serif" font-weight="700" fill="var(--text)">Hyperviseur Proxmox VE</text>
+            <text x="250" y="63" text-anchor="middle" font-size="10.5" font-family="monospace" fill="var(--text-dim)">2 × Xeon · 128 Go RAM · RAID 10 (4 × 1 To SSD)</text>
+
+            <g font-family="sans-serif" font-size="10.5">
+              <rect x="62" y="80" width="120" height="48" rx="8" fill="var(--surface-2)" stroke="var(--border)"/>
+              <text x="122" y="100" text-anchor="middle" font-weight="600" fill="var(--text)">VM-AD01</text>
+              <text x="122" y="116" text-anchor="middle" fill="var(--text-dim)">4 vCPU · 8 Go</text>
+
+              <rect x="192" y="80" width="120" height="48" rx="8" fill="var(--surface-2)" stroke="var(--border)"/>
+              <text x="252" y="100" text-anchor="middle" font-weight="600" fill="var(--text)">VM-FIC01</text>
+              <text x="252" y="116" text-anchor="middle" fill="var(--text-dim)">4 vCPU · 16 Go</text>
+
+              <rect x="322" y="80" width="120" height="48" rx="8" fill="var(--surface-2)" stroke="var(--border)"/>
+              <text x="382" y="100" text-anchor="middle" font-weight="600" fill="var(--text)">VM-BDD01</text>
+              <text x="382" y="116" text-anchor="middle" fill="var(--text-dim)">8 vCPU · 32 Go</text>
+
+              <rect x="62" y="140" width="120" height="48" rx="8" fill="var(--surface-2)" stroke="var(--border)"/>
+              <text x="122" y="160" text-anchor="middle" font-weight="600" fill="var(--text)">VM-SUP01</text>
+              <text x="122" y="176" text-anchor="middle" fill="var(--text-dim)">2 vCPU · 4 Go</text>
+
+              <rect x="192" y="140" width="120" height="48" rx="8" fill="var(--surface-2)" stroke="var(--border)"/>
+              <text x="252" y="160" text-anchor="middle" font-weight="600" fill="var(--text)">VM-WEB01</text>
+              <text x="252" y="176" text-anchor="middle" fill="var(--text-dim)">2 vCPU · 4 Go</text>
+
+              <rect x="322" y="140" width="120" height="48" rx="8" fill="var(--surface-2)" stroke="var(--border)" stroke-dasharray="4 3"/>
+              <text x="382" y="160" text-anchor="middle" font-weight="600" fill="var(--text-muted)">VM-TEST</text>
+              <text x="382" y="176" text-anchor="middle" fill="var(--text-dim)">bac à sable</text>
+            </g>
+
+            <!-- Sauvegardes -->
+            <g fill="none" stroke="currentColor" stroke-width="1.6" opacity=".45" color="var(--text-dim)">
+              <path d="M460 110 H520"/>
+              <path d="M620 152 V196"/>
+              <path d="M620 244 V276"/>
+            </g>
+
+            <rect x="520" y="86" width="200" height="66" rx="11" fill="var(--surface)" stroke="var(--border)"/>
+            <text x="620" y="110" text-anchor="middle" font-size="12.5" font-family="sans-serif" font-weight="600" fill="var(--text)">Copie 1 — locale</text>
+            <text x="620" y="127" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">volume dédié de l’hyperviseur</text>
+            <text x="620" y="143" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">quotidienne · 7 jours</text>
+
+            <rect x="520" y="196" width="200" height="66" rx="11" fill="var(--surface)" stroke="var(--border)"/>
+            <text x="620" y="220" text-anchor="middle" font-size="12.5" font-family="sans-serif" font-weight="600" fill="var(--text)">Copie 2 — NAS</text>
+            <text x="620" y="237" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">autre bâtiment · RAID 5</text>
+            <text x="620" y="253" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">quotidienne · 4 semaines</text>
+
+            <rect x="520" y="276" width="200" height="56" rx="11" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.4"/>
+            <text x="620" y="298" text-anchor="middle" font-size="12.5" font-family="sans-serif" font-weight="600" fill="var(--text)">Copie 3 — hors ligne</text>
+            <text x="620" y="315" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">disque chiffré, débranché · mensuelle</text>
+
+            <text x="250" y="232" text-anchor="middle" font-size="11.5" font-family="sans-serif" font-weight="600" fill="var(--accent)">Règle 3-2-1</text>
+            <text x="250" y="252" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">3 copies · 2 supports différents · 1 hors site</text>
+            <text x="250" y="272" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="var(--text-dim)">dont 1 déconnectée en permanence</text>
+          </svg>
+          <figcaption>Consolidation sur un hyperviseur et stratégie de sauvegarde en trois copies.</figcaption>
+        </figure>
+
+        <h2>Mise en œuvre</h2>
+        <ol class="steps">
+          <li>
+            <strong>Étude de dimensionnement</strong>
+            Relevé sur un mois de l’usage processeur, mémoire et disque des cinq serveurs, puis calcul des
+            ressources cibles avec une marge de 40 % pour la croissance et la tolérance de panne.
+          </li>
+          <li>
+            <strong>Installation de l’hyperviseur</strong>
+            Proxmox VE sur grappe RAID 10, réseau en agrégation de deux liens, séparation des flux
+            d’administration et de production sur des VLAN distincts.
+          </li>
+          <li>
+            <strong>Migration des serveurs</strong>
+            Physique vers virtuel pour deux serveurs, réinstallation propre pour les trois autres — l’occasion de
+            repartir sur des systèmes à jour. Migration réalisée un service à la fois, avec retour arrière possible.
+          </li>
+          <li>
+            <strong>Sauvegarde des machines virtuelles</strong>
+            Tâches planifiées nocturnes, mode instantané pour limiter l’indisponibilité, compression et
+            chiffrement des archives, rétention différenciée selon la criticité.
+          </li>
+          <li>
+            <strong>Copie hors site et hors ligne</strong>
+            Synchronisation vers un NAS situé dans un autre bâtiment, puis copie mensuelle sur un disque chiffré
+            physiquement débranché — la protection la plus efficace contre un rançongiciel.
+          </li>
+          <li>
+            <strong>Tests de restauration</strong>
+            Restauration mensuelle d’une machine virtuelle dans un réseau isolé, vérification du démarrage des
+            services et relevé du temps nécessaire.
+          </li>
+          <li>
+            <strong>Rédaction du plan de reprise</strong>
+            Document opérationnel : ordre de redémarrage des services, coordonnées, emplacement des supports,
+            procédure pas à pas utilisable par une personne extérieure au projet.
+          </li>
+        </ol>
+
+        <h3>Extrait — planification et vérification des sauvegardes</h3>
+        <pre><code># Sauvegarde quotidienne des machines vitales (02 h 00)
+0 2 * * * root vzdump 101 102 103 \
+    --storage sauvegardes-local \
+    --mode snapshot --compress zstd \
+    --mailto exploitation@sotracom.local --mailnotification always
+
+# Synchronisation vers le NAS distant (04 h 00)
+0 4 * * * root rsync -az --delete \
+    /mnt/sauvegardes/ nas-secours:/volume1/sauvegardes/ \
+    &gt;&gt; /var/log/sync-sauvegardes.log 2&gt;&amp;1
+
+# Alerte si aucune archive de moins de 26 heures
+30 8 * * * root find /mnt/sauvegardes -name "*.zst" -mmin -1560 | grep -q . \
+    || echo "Aucune sauvegarde recente" | mail -s "ALERTE sauvegarde" exploitation@sotracom.local</code></pre>
+
+        <h2>Résultats des tests de restauration</h2>
+        <div class="table-wrap" style="margin-bottom:1.4rem">
+          <table>
+            <thead>
+              <tr><th scope="col">Scénario testé</th><th scope="col">DMIA visée</th><th scope="col">Temps constaté</th><th scope="col">Résultat</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Restauration d’un fichier supprimé</td><td>1 h</td><td>6 minutes</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Restauration complète du serveur de fichiers</td><td>4 h</td><td>52 minutes</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Restauration du contrôleur de domaine</td><td>2 h</td><td>1 h 15</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Perte simulée de l’hyperviseur (depuis le NAS)</td><td>8 h</td><td>5 h 40</td><td><span class="badge badge--ok">Conforme</span></td></tr>
+              <tr><td>Restauration depuis le disque hors ligne</td><td>24 h</td><td>7 h</td><td><span class="badge badge--warn">Conforme, procédure à simplifier</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Difficultés rencontrées</h2>
+        <ul>
+          <li>
+            <strong>Sauvegarde d’un contrôleur de domaine.</strong> Restaurer une machine virtuelle Active Directory
+            comme une machine ordinaire peut créer des incohérences dans la réplication. J’ai dû comprendre le
+            fonctionnement des identifiants d’invocation et privilégier une restauration dans un réseau isolé pour
+            les tests.
+          </li>
+          <li>
+            <strong>Fenêtre de sauvegarde trop courte.</strong> La première planification lançait toutes les
+            sauvegardes en même temps, saturant les disques. Un échelonnement des tâches et l’activation de la
+            sauvegarde incrémentale ont ramené la durée totale de 6 h à 1 h 40.
+          </li>
+          <li>
+            <strong>Espace disque du NAS insuffisant.</strong> Le calcul initial de rétention n’intégrait pas la
+            croissance des données. Le recours à la déduplication et une révision des durées de conservation par
+            criticité ont réglé la question sans achat supplémentaire.
+          </li>
+        </ul>
+
+        <h2>Bilan et pistes d’amélioration</h2>
+        <p>
+          Au-delà de la consolidation (cinq machines physiques remplacées par une, consommation divisée par trois),
+          le vrai livrable est la <strong>confiance</strong> : nous savons désormais combien de temps prend une
+          restauration, parce que nous l’avons chronométrée. Le plan de reprise a été rejoué par un camarade
+          n’ayant pas participé au projet, ce qui en a validé la clarté.
+        </p>
+        <ul>
+          <li>Ajouter un second nœud pour former une grappe et permettre la migration à chaud.</li>
+          <li>Mettre en place un serveur de sauvegarde dédié avec vérification automatique de l’intégrité.</li>
+          <li>Chiffrer les volumes du NAS au repos.</li>
+          <li>Automatiser un test de restauration hebdomadaire avec rapport par courriel.</li>
+        </ul>
+
+      </article>
+
+      <aside class="project-aside">
+        <div class="card">
+          <h3 style="font-size:1rem">Fiche d’identité</h3>
+          <dl style="margin:0;display:grid;gap:.85rem;font-size:.88rem">
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Durée</dt><dd style="margin:.2rem 0 0">9 semaines</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Équipe</dt><dd style="margin:.2rem 0 0">Binôme — rôle : sauvegarde et plan de reprise</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Périmètre</dt><dd style="margin:.2rem 0 0">1 hyperviseur, 6 machines virtuelles, 2 sites de stockage</dd></div>
+            <div><dt style="color:var(--text-dim);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700">Livrables</dt><dd style="margin:.2rem 0 0">Étude de dimensionnement, plan de reprise, rapports de test</dd></div>
+          </dl>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Technologies</h3>
+          <div class="tags">
+            <span class="badge">Proxmox VE</span><span class="badge">KVM</span><span class="badge">RAID 10</span>
+            <span class="badge">vzdump</span><span class="badge">rsync</span><span class="badge">NAS</span>
+            <span class="badge">Chiffrement</span><span class="badge">Cron</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Compétences validées</h3>
+          <ul style="padding-left:1.1rem;font-size:.87rem;color:var(--text-muted);margin:0">
+            <li>Garantir la disponibilité, l’intégrité et la confidentialité des données</li>
+            <li>Installer, tester et déployer une solution d’infrastructure</li>
+            <li>Protéger les données à caractère personnel</li>
+            <li>Mettre à disposition un service informatique</li>
+          </ul>
+          <p style="margin:.9rem 0 0"><a href="competences.html">Voir le référentiel →</a></p>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:1rem">Navigation</h3>
+          <p style="margin:0;font-size:.88rem"><a href="projet-supervision.html">← PPE 04 — Supervision</a></p>
+          <p style="margin:.5rem 0 0;font-size:.88rem"><a href="projet-serveur-web.html">PPE 06 — Hébergement web →</a></p>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:.9rem">
+          <span class="brand__mark" aria-hidden="true">MS</span>
+          <span>Mathys<span class="brand__sub">BTS SIO · Option SISR</span></span>
+        </a>
+        <p style="max-width:38ch;font-size:.9rem">
+          Portfolio de compétences réalisé dans le cadre du BTS Services Informatiques aux Organisations,
+          option Solutions d’Infrastructure, Systèmes et Réseaux.
+        </p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="parcours.html">Parcours</a></li>
+          <li><a href="competences.html">Compétences</a></li>
+          <li><a href="projets.html">Projets PPE</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="veille.html">Veille technologique</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="assets/docs/cv.pdf">CV (PDF)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Mathys — Tous droits réservés.</span>
+      <span>Site statique, sans cookie ni traceur.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="icon-btn" id="to-top" type="button" aria-label="Revenir en haut de page">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</button>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
